@@ -1,35 +1,36 @@
 import { NextPage } from 'next'
 import React from 'react'
 import Head from 'next/head'
-import { useQuery } from '@apollo/react-hooks'
+import { NextContextWithApollo } from '../interfaces/NextContextWithApollo'
 
 import JOBS_QUERY from '../graphql/jobs.query'
 
 type Job = { id: string; title: string }
 
-const Home: NextPage = () => {
-  const { data, loading, error } = useQuery(JOBS_QUERY)
-
-  if (loading) {
-    return <p>Loading...</p>
+interface Props {
+  data: {
+    jobs: Job[]
   }
+}
 
-  if (error) {
-    return <p>Error: {JSON.stringify(error)}</p>
-  }
-  return (
-    <div>
-      <Head>
-        <title>Home</title>
-        <link rel='icon' href='/favicon.ico' />
-      </Head>
-      <ul>
-        {data.jobs.map((job: Job) => {
-          return <li key={`job__${job.id}`}>{job.title}</li>
-        })}
-      </ul>
-    </div>
-  )
+const Home: NextPage<Props> = ({ data }) => (
+  <div>
+    <Head>
+      <title>Home</title>
+      <link rel='icon' href='/favicon.ico' />
+    </Head>
+    <ul>
+      {data.jobs.map((job: Job) => {
+        return <li key={`job__${job.id}`}>{job.title}</li>
+      })}
+    </ul>
+  </div>
+)
+
+Home.getInitialProps = async ({ apolloClient }: NextContextWithApollo) => {
+  const { data } = await apolloClient.query({ query: JOBS_QUERY })
+
+  return { data }
 }
 
 export default Home
