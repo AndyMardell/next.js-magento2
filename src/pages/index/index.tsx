@@ -1,24 +1,17 @@
 import { NextPage } from 'next'
 import React from 'react'
-import Head from 'next/head'
 
 import NextContextWithApollo from '../../interfaces/NextContextWithApollo'
 import { CONFIG_QUERY } from './queries'
 import { Config } from './types'
-import Header from '../../components/global/Header'
+import Layout from '../../components/global/Layout'
 
 interface Props {
   storeConfig: Config
 }
 
 const Home: NextPage<Props> = ({ storeConfig }) => (
-  <div>
-    <Head>
-      <title>Home</title>
-      <link rel='icon' href='/favicon.ico' />
-    </Head>
-    <Header welcome={storeConfig.welcome} />
-  </div>
+  <Layout title={storeConfig.welcome}>Content</Layout>
 )
 
 Home.getInitialProps = async ({ apolloClient }: NextContextWithApollo) => {

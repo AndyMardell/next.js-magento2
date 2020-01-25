@@ -5,7 +5,7 @@ import Head from 'next/head'
 import NextContextWithApollo from '../../interfaces/NextContextWithApollo'
 import { PAGE_QUERY } from './queries'
 import { Page as PageType } from './types'
-import Header from '../../components/global/Header'
+import Layout from '../../components/global/Layout'
 import Content from '../../components/page/Content'
 import NotFound from '../../components/page/NotFound'
 
@@ -27,14 +27,9 @@ const Page: NextPage<Props> = ({ error, pageData }) => {
   }
 
   return (
-    <div>
-      <Head>
-        <title>{pageData.title}</title>
-        <link rel='icon' href='/favicon.ico' />
-      </Head>
-      <Header welcome={pageData.title} />
+    <Layout title={pageData.title}>
       <Content html={pageData.content} />
-    </div>
+    </Layout>
   )
 }
 

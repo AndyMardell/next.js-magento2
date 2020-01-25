@@ -1,9 +1,9 @@
 import { FunctionComponent } from 'react'
 
 interface Props {
-  welcome?: string
+  title?: string
 }
 
-const Header: FunctionComponent<Props> = ({ welcome }) => <div>{welcome}</div>
+const Header: FunctionComponent<Props> = ({ title }) => <div>{title}</div>
 
 export default Header
