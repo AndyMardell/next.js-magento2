@@ -1,16 +1,15 @@
 import { NextPage } from 'next'
 import React from 'react'
-import Head from 'next/head'
 
 import NextContextWithApollo from '../../interfaces/NextContextWithApollo'
 import { PAGE_QUERY } from './queries'
-import { Page as PageType } from './types'
+import { PageData } from './types'
 import Layout from '../../components/global/Layout'
 import Content from '../../components/page/Content'
 import NotFound from '../../components/page/NotFound'
 
 interface Props {
-  pageData: PageType
+  pageData: PageData
   error?: string
 }
 
@@ -23,12 +22,12 @@ const defaultProps = {
 
 const Page: NextPage<Props> = ({ error, pageData }) => {
   if (error) {
-    return <NotFound />
+    return <NotFound pageData={pageData} />
   }
 
   return (
     <Layout title={pageData.title}>
-      <Content html={pageData.content} />
+      <Content pageData={pageData} />
     </Layout>
   )
 }
@@ -48,9 +47,14 @@ Page.getInitialProps = async ({
 
     return { pageData: data.cmsPage }
   } catch (err) {
+    const { data } = await apolloClient.query({
+      query: PAGE_QUERY,
+      variables: { identifier: 'no-route' }
+    })
+
     if (res) {
       res.statusCode = 404
-      return { error: '404', ...defaultProps }
+      return { error: '404', pageData: data.cmsPage }
     }
   }
 

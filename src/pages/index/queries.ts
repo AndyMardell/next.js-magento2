@@ -1,11 +1,19 @@
 import gql from 'graphql-tag'
 
-const CONFIG_QUERY = gql`
-  query StoreConfig {
+const HOME_QUERY = gql`
+  query HomeQuery($identifier: String!) {
     storeConfig {
       welcome
+    }
+    cmsPage(identifier: $identifier) {
+      title
+      content
+      content_heading
+      meta_title
+      meta_description
+      meta_keywords
     }
   }
 `
 
-export { CONFIG_QUERY }
+export { HOME_QUERY }

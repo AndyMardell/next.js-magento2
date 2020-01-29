@@ -6,21 +6,20 @@ import Footer from '../Footer'
 
 interface Props {
   title?: string
+  welcome?: string
 }
 
-const Layout: FunctionComponent<Props> = ({ title, children }) => {
-  return (
-    <>
-      <Head>
-        <title>Home</title>
-        <meta name='description' content='Default meta description' />
-        <link rel='icon' href='/favicon.ico' />
-      </Head>
-      <Header title={title} />
-      <main>{children}</main>
-      <Footer />
-    </>
-  )
-}
+const Layout: FunctionComponent<Props> = ({ title, welcome, children }) => (
+  <>
+    <Head>
+      <title>Home</title>
+      <meta name='description' content='Default meta description' />
+      <link rel='icon' href='/favicon.ico' />
+    </Head>
+    <Header title={title} welcome={welcome} />
+    <main>{children}</main>
+    <Footer />
+  </>
+)
 
 export default Layout

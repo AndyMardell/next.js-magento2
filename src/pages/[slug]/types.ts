@@ -1,4 +1,4 @@
-export type Page = {
+export type PageData = {
   url_key?: string
   title: string
   content: string

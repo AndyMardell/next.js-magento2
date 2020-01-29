@@ -1,11 +1,17 @@
 import React, { FunctionComponent } from 'react'
 
 interface Props {
-  html: string
+  pageData: {
+    content: string
+    content_heading?: string
+  }
 }
 
-const Content: FunctionComponent<Props> = ({ html }) => (
-  <div dangerouslySetInnerHTML={{ __html: html }} />
+const Content: FunctionComponent<Props> = ({ pageData }) => (
+  <>
+    <h2>{pageData.content_heading}</h2>
+    <div dangerouslySetInnerHTML={{ __html: pageData.content }} />
+  </>
 )
 
 export default Content
