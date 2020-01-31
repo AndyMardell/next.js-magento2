@@ -5,7 +5,7 @@ import NextContextWithApollo from '../../interfaces/NextContextWithApollo'
 import { HOME_QUERY } from './queries'
 import { Config, PageData } from './types'
 import Layout from '../../components/global/Layout'
-import NotFound from '../../components/page/NotFound'
+import Content from '../../components/page/Content'
 
 interface Props {
   pageData: PageData
@@ -22,7 +22,11 @@ const defaultProps = {
 
 const Home: NextPage<Props> = ({ error, storeConfig, pageData }) => {
   if (error) {
-    return <NotFound pageData={pageData} />
+    return (
+      <Layout>
+        <Content pageData={pageData} />
+      </Layout>
+    )
   }
 
   return (
@@ -30,8 +34,7 @@ const Home: NextPage<Props> = ({ error, storeConfig, pageData }) => {
       title={pageData.meta_title}
       welcome={storeConfig ? storeConfig.welcome : ''}
     >
-      <div>{storeConfig ? storeConfig.welcome : ''}</div>
-      <h1>{pageData.content_heading}</h1>
+      <Content pageData={pageData} />
     </Layout>
   )
 }

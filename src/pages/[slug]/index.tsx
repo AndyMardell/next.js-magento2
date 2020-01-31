@@ -6,7 +6,6 @@ import { PAGE_QUERY } from './queries'
 import { PageData } from './types'
 import Layout from '../../components/global/Layout'
 import Content from '../../components/page/Content'
-import NotFound from '../../components/page/NotFound'
 
 interface Props {
   pageData: PageData
@@ -22,7 +21,11 @@ const defaultProps = {
 
 const Page: NextPage<Props> = ({ error, pageData }) => {
   if (error) {
-    return <NotFound pageData={pageData} />
+    return (
+      <Layout>
+        <Content pageData={pageData} />
+      </Layout>
+    )
   }
 
   return (
