@@ -2,7 +2,7 @@ import { NextPage } from 'next'
 import { removeCookies, getCookies } from 'cookies-next'
 
 import NextContextWithApollo from '../../../interfaces/NextContextWithApollo'
-import { LOGOUT_MUTATION } from './mutations'
+import { LOGOUT_MUTATION } from '../../../gql/customer/mutations'
 import redirect from '../../../lib/redirect'
 
 const CustomerAccountLogout: NextPage = () => null

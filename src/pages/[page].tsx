@@ -1,11 +1,12 @@
 import { NextPage } from 'next'
 import React from 'react'
 
-import NextContextWithApollo from '../../interfaces/NextContextWithApollo'
-import { PAGE_QUERY } from './queries'
-import { PageData } from './types'
-import Layout from '../../components/global/Layout'
-import Content from '../../components/page/Content'
+import NextContextWithApollo from '../interfaces/NextContextWithApollo'
+import { PAGE_QUERY } from '../gql/page/queries'
+import { PageData } from '../gql/page/types'
+import Layout from '../components/global/Layout'
+import Content from '../components/page/Content'
+import Head from 'next/head'
 
 interface Props {
   pageData: PageData
@@ -29,7 +30,11 @@ const Page: NextPage<Props> = ({ error, pageData }) => {
   }
 
   return (
-    <Layout title={pageData.title}>
+    <Layout>
+      <Head>
+        <title>{pageData.meta_title}</title>
+        <meta name='description' content={pageData.meta_description} />
+      </Head>
       <Content pageData={pageData} />
     </Layout>
   )
@@ -40,7 +45,7 @@ Page.getInitialProps = async ({
   query,
   res
 }: NextContextWithApollo) => {
-  const slug = Array.isArray(query.slug) ? query.slug[0] : query.slug
+  const slug = Array.isArray(query.page) ? query.page[0] : query.page
 
   try {
     const { data } = await apolloClient.query({

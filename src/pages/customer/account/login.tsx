@@ -5,7 +5,7 @@ import { setCookies } from 'cookies-next'
 
 import withData from '../../../lib/apollo-client'
 import Layout from '../../../components/global/Layout'
-import { LOGIN_MUTATION } from './mutations'
+import { LOGIN_MUTATION } from '../../../gql/customer/mutations'
 import redirect from '../../../lib/redirect'
 
 interface FieldValues {

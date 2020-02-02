@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form'
 
 import withData from '../../../lib/apollo-client'
 import Layout from '../../../components/global/Layout'
-import { REGISTER_MUTATION } from './mutations'
+import { REGISTER_MUTATION } from '../../../gql/customer/mutations'
 import { NextPage } from 'next'
 import redirect from '../../../lib/redirect'
 

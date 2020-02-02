@@ -3,10 +3,11 @@ import { NextPage } from 'next'
 import Link from 'next/link'
 import { getCookies, removeCookies } from 'cookies-next'
 
-import NextContextWithApollo from '../../../interfaces/NextContextWithApollo'
-import { PageData } from './types'
-import { CUSTOMER_QUERY } from './queries'
-import redirect from '../../../lib/redirect'
+import NextContextWithApollo from '../../interfaces/NextContextWithApollo'
+import { PageData } from '../../gql/customer/types'
+import { CUSTOMER_QUERY } from '../../gql/customer/queries'
+import redirect from '../../lib/redirect'
+import Layout from '../../components/global/Layout'
 
 interface Props {
   pageData: PageData
@@ -14,13 +15,13 @@ interface Props {
 
 const CustomerAccount: NextPage<Props> = ({ pageData }) => {
   return (
-    <>
+    <Layout>
       <h1>Customer Account Dashboard</h1>
       <p>Hello {pageData.customer.firstname}!</p>
       <Link href='/customer/account/logout'>
         <a>Logout</a>
       </Link>
-    </>
+    </Layout>
   )
 }
 
