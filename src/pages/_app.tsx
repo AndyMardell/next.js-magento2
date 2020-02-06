@@ -1,8 +1,10 @@
+import App from 'next/app'
 import { ApolloProvider } from '@apollo/react-hooks'
+
 import GlobalStyle from '../styles/global'
 import withData from '../lib/apollo-client'
 import AppPropsWithApollo from '../interfaces/AppPropsWithApollo'
-import App from 'next/app'
+import { ContextProvider } from '../context'
 
 class MyApp extends App<AppPropsWithApollo> {
   render() {
@@ -10,8 +12,10 @@ class MyApp extends App<AppPropsWithApollo> {
 
     return (
       <ApolloProvider client={apollo}>
-        <GlobalStyle />
-        <Component {...pageProps} />
+        <ContextProvider>
+          <GlobalStyle />
+          <Component {...pageProps} />
+        </ContextProvider>
       </ApolloProvider>
     )
   }

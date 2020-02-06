@@ -38,43 +38,50 @@ interface Props {
   welcome?: string
 }
 
-const Header: FunctionComponent<Props> = ({ welcome }) => (
-  <header>
-    <TopBar>
-      <div>{welcome}</div>
-      <nav>
-        <ul>
-          <li>
-            <Link href='/customer/account'>
-              <a>Account</a>
-            </Link>
-          </li>
-          <li>
-            <Link href='/customer/account/login'>
-              <a>Login</a>
-            </Link>
-          </li>
-          <li>
-            <Link href='/customer/account/logout'>
-              <a>Logout</a>
-            </Link>
-          </li>
-        </ul>
-      </nav>
-    </TopBar>
+const Header: FunctionComponent<Props> = ({ welcome }) => {
+  return (
+    <header>
+      <TopBar>
+        <div>{welcome}</div>
+        <nav>
+          <ul>
+            <li>
+              <Link href='/customer/account'>
+                <a>Account</a>
+              </Link>
+            </li>
+            <li>
+              <Link href='/customer/account/login'>
+                <a>Login</a>
+              </Link>
+            </li>
+            <li>
+              <Link href='/customer/account/logout'>
+                <a>Logout</a>
+              </Link>
+            </li>
+          </ul>
+        </nav>
+      </TopBar>
 
-    <MainBar>
-      <nav>
-        <ul>
-          <li>
-            <Link href='/'>
-              <a>Home</a>
-            </Link>
-          </li>
-        </ul>
-      </nav>
-    </MainBar>
-  </header>
-)
+      <MainBar>
+        <nav>
+          <ul>
+            <li>
+              <Link href='/'>
+                <a>Home</a>
+              </Link>
+            </li>
+            <li>
+              <Link href='/products'>
+                <a>Products</a>
+              </Link>
+            </li>
+          </ul>
+        </nav>
+      </MainBar>
+    </header>
+  )
+}
 
 export default Header

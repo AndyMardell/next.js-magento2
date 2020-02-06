@@ -6,8 +6,8 @@ interface Props {
   product: ProductType
 }
 
-const Product: FunctionComponent<Props> = ({ product }) => (
-  <div>{product.name}</div>
-)
+const Product: FunctionComponent<Props> = ({ product }) => {
+  return <div>{product.name}</div>
+}
 
 export default Product

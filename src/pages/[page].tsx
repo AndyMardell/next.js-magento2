@@ -1,4 +1,6 @@
 import { NextPage } from 'next'
+import Head from 'next/head'
+import ErrorPage from 'next/error'
 import React from 'react'
 
 import NextContextWithApollo from '../interfaces/NextContextWithApollo'
@@ -6,38 +8,28 @@ import { PAGE_QUERY } from '../gql/page/queries'
 import { PageData } from '../gql/page/types'
 import Layout from '../components/global/Layout'
 import Content from '../components/page/Content'
-import Head from 'next/head'
+import handleGqlError from '../lib/handle-gql-error'
+import ErrorInterface from '../interfaces/Error'
 
 interface Props {
-  pageData: PageData
-  error?: string
-}
-
-const defaultProps = {
-  pageData: {
-    title: '',
-    content: ''
-  }
+  pageData?: PageData
+  error?: ErrorInterface
 }
 
 const Page: NextPage<Props> = ({ error, pageData }) => {
-  if (error) {
+  if (!error && pageData) {
     return (
       <Layout>
+        <Head>
+          <title>{pageData.meta_title || ''}</title>
+          <meta name='description' content={pageData.meta_description || ''} />
+        </Head>
         <Content pageData={pageData} />
       </Layout>
     )
   }
 
-  return (
-    <Layout>
-      <Head>
-        <title>{pageData.meta_title}</title>
-        <meta name='description' content={pageData.meta_description} />
-      </Head>
-      <Content pageData={pageData} />
-    </Layout>
-  )
+  return <ErrorPage statusCode={error ? error.status : 500} />
 }
 
 Page.getInitialProps = async ({
@@ -55,18 +47,8 @@ Page.getInitialProps = async ({
 
     return { pageData: data.cmsPage }
   } catch (err) {
-    const { data } = await apolloClient.query({
-      query: PAGE_QUERY,
-      variables: { identifier: 'no-route' }
-    })
-
-    if (res) {
-      res.statusCode = 404
-      return { error: '404', pageData: data.cmsPage }
-    }
+    return { error: handleGqlError({ err, res }) }
   }
-
-  return defaultProps
 }
 
 export default Page

@@ -1,79 +1,48 @@
 import { NextPage } from 'next'
 import Head from 'next/head'
 import React from 'react'
+import ErrorPage from 'next/error'
 
 import NextContextWithApollo from '../interfaces/NextContextWithApollo'
-import { CONFIG_QUERY, HOME_QUERY } from '../gql/home/queries'
+import { HOME_QUERY } from '../gql/home/queries'
 import { PageData } from '../gql/home/types'
 import Layout from '../components/global/Layout'
 import Content from '../components/page/Content'
+import handleGqlError from '../lib/handle-gql-error'
+import ErrorInterface from '../interfaces/Error'
 
 interface Props {
-  pageData: PageData
-  error?: string
-}
-
-const defaultProps = {
-  pageData: {
-    title: '',
-    content: ''
-  }
+  pageData?: PageData
+  error?: ErrorInterface
 }
 
 const Home: NextPage<Props> = ({ error, pageData }) => {
-  if (error) {
+  if (!error && pageData) {
     return (
       <Layout>
+        <Head>
+          <title>{pageData.meta_title || ''}</title>
+          <meta name='description' content={pageData.meta_description} />
+        </Head>
         <Content pageData={pageData} />
       </Layout>
     )
   }
 
-  return (
-    <Layout>
-      <Head>
-        <title>{pageData.meta_title || ''}</title>
-        <meta name='description' content={pageData.meta_description} />
-      </Head>
-      <Content pageData={pageData} />
-    </Layout>
-  )
+  return <ErrorPage statusCode={error ? error.status : 500} />
 }
 
 Home.getInitialProps = async ({ apolloClient, res }: NextContextWithApollo) => {
-  let config = {
-    cms_home_page: 'home',
-    cms_no_route: 'no-route'
-  }
-
   try {
-    const { data: configData } = await apolloClient.query({
-      query: CONFIG_QUERY
-    })
-
-    config = {
-      ...configData.storeConfig
-    }
-
     const { data } = await apolloClient.query({
       query: HOME_QUERY,
-      variables: { identifier: config.cms_home_page }
+      variables: { identifier: 'home' }
     })
 
     return { pageData: data.cmsPage }
   } catch (err) {
-    const { data } = await apolloClient.query({
-      query: HOME_QUERY,
-      variables: { identifier: config.cms_no_route }
-    })
-
-    if (res) {
-      res.statusCode = 404
-      return { error: '404', pageData: data.cmsPage }
-    }
+    return { error: handleGqlError({ err, res }) }
   }
-
-  return defaultProps
 }
 
 export default Home

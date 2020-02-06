@@ -7,12 +7,14 @@ interface Props {
   products: ProductType[]
 }
 
-const ProductList: FunctionComponent<Props> = ({ products }) => (
-  <div>
-    {products.map((productDetails: ProductType, i: number) => (
-      <Product key={i} product={productDetails} />
-    ))}
-  </div>
-)
+const ProductList: FunctionComponent<Props> = ({ products }) => {
+  return (
+    <div>
+      {products.map((productDetails: ProductType, i: number) => (
+        <Product key={i} product={productDetails} />
+      ))}
+    </div>
+  )
+}
 
 export default ProductList

@@ -1,14 +1,15 @@
 import { NextPage } from 'next'
 import React from 'react'
+import ErrorPage from 'next/error'
 
 import NextContextWithApollo from '../interfaces/NextContextWithApollo'
 import { PRODUCTS_QUERY } from '../gql/products/queries'
 import { Product } from '../gql/products/types'
-import { PAGE_QUERY } from '../gql/page/queries'
 import { PageData } from '../gql/page/types'
 import Layout from '../components/global/Layout'
-import Content from '../components/page/Content'
 import ProductList from '../components/catalog/Products/ProductList'
+import handleGqlError from '../lib/handle-gql-error'
+import ErrorInterface from '../interfaces/Error'
 
 interface Props {
   pageData?: PageData
@@ -16,26 +17,11 @@ interface Props {
     item_count: number
     items: Product[]
   }
-  error?: string
+  error?: ErrorInterface
 }
 
-const defaultProps = {
-  pageData: {
-    title: '',
-    content: ''
-  }
-}
-
-const Products: NextPage<Props> = ({ error, products, pageData }) => {
-  if (error && pageData) {
-    return (
-      <Layout>
-        <Content pageData={pageData} />
-      </Layout>
-    )
-  }
-
-  if (products && products.items.length) {
+const Products: NextPage<Props> = ({ error, products }) => {
+  if (!error && products && products.items.length) {
     return (
       <Layout>
         <ProductList products={products.items} />
@@ -43,7 +29,7 @@ const Products: NextPage<Props> = ({ error, products, pageData }) => {
     )
   }
 
-  return null
+  return <ErrorPage statusCode={error ? error.status : 500} />
 }
 
 Products.getInitialProps = async ({
@@ -58,18 +44,8 @@ Products.getInitialProps = async ({
 
     return { products: data.products }
   } catch (err) {
-    const { data } = await apolloClient.query({
-      query: PAGE_QUERY,
-      variables: { identifier: 'no-route' }
-    })
-
-    if (res) {
-      res.statusCode = 404
-      return { error: '404', pageData: data.cmsPage }
-    }
+    return { error: handleGqlError({ err, res }) }
   }
-
-  return defaultProps
 }
 
 export default Products

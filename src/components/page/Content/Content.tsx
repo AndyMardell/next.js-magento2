@@ -7,11 +7,13 @@ interface Props {
   }
 }
 
-const Content: FunctionComponent<Props> = ({ pageData }) => (
-  <>
-    <h2>{pageData.content_heading}</h2>
-    <div dangerouslySetInnerHTML={{ __html: pageData.content }} />
-  </>
-)
+const Content: FunctionComponent<Props> = ({ pageData }) => {
+  return (
+    <>
+      <h2>{pageData.content_heading}</h2>
+      <div dangerouslySetInnerHTML={{ __html: pageData.content }} />
+    </>
+  )
+}
 
 export default Content

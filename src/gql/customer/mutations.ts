@@ -7,6 +7,7 @@ const LOGIN_MUTATION = gql`
     }
   }
 `
+
 const LOGOUT_MUTATION = gql`
   mutation LogoutMutation {
     revokeCustomerToken {
