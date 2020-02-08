@@ -1,27 +1,43 @@
 import { NextPage } from 'next'
 import { removeCookies, getCookies } from 'cookies-next'
+import { useEffect } from 'react'
+import { useMutation } from '@apollo/react-hooks'
+import { useRouter } from 'next/router'
 
-import NextContextWithApollo from '../../../interfaces/NextContextWithApollo'
 import { LOGOUT_MUTATION } from '../../../gql/customer/mutations'
-import redirect from '../../../lib/redirect'
+import useMessages from '../../../hooks/useMessages'
 
-const CustomerAccountLogout: NextPage = () => null
+const CustomerAccountLogout: NextPage = () => {
+  const [logout] = useMutation(LOGOUT_MUTATION)
+  const router = useRouter()
+  const { setMessage } = useMessages()
 
-CustomerAccountLogout.getInitialProps = async (ctx: NextContextWithApollo) => {
-  try {
-    await ctx.apolloClient.mutate({
-      mutation: LOGOUT_MUTATION,
-      context: {
-        token: getCookies(ctx, process.env.SESSION_COOKIE_NAME)
-      }
-    })
-  } catch (err) {
-    console.log(err)
+  const resetUser = () => {
+    removeCookies(null, process.env.SESSION_COOKIE_NAME)
+    router.push('/customer/account/login')
   }
 
-  removeCookies(ctx, process.env.SESSION_COOKIE_NAME)
-  redirect('/customer/account/login', ctx)
-  return {}
+  const triggerLogout = async () => {
+    try {
+      await logout({
+        context: {
+          token: getCookies(null, process.env.SESSION_COOKIE_NAME)
+        }
+      })
+    } catch (err) {
+      resetUser()
+      console.log(err)
+    }
+
+    setMessage('Successfully logged out', { type: 'success' })
+    resetUser()
+  }
+
+  useEffect(() => {
+    triggerLogout()
+  }, [])
+
+  return null
 }
 
 export default CustomerAccountLogout

@@ -6,6 +6,10 @@ import withData from '../lib/apollo-client'
 import AppPropsWithApollo from '../interfaces/AppPropsWithApollo'
 import { ContextProvider } from '../context'
 
+interface ContextType {
+  loggedIn?: boolean
+}
+
 class MyApp extends App<AppPropsWithApollo> {
   render() {
     const { Component, pageProps, apollo } = this.props

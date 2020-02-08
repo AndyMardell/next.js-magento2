@@ -1,49 +1,38 @@
 import React from 'react'
 import { NextPage } from 'next'
 import Link from 'next/link'
-import { getCookies, removeCookies } from 'cookies-next'
+import { removeCookies, getCookies } from 'cookies-next'
+import { useQuery } from '@apollo/react-hooks'
+import Router from 'next/router'
 
-import NextContextWithApollo from '../../interfaces/NextContextWithApollo'
-import { PageData } from '../../gql/customer/types'
 import { CUSTOMER_QUERY } from '../../gql/customer/queries'
-import redirect from '../../lib/redirect'
 import Layout from '../../components/global/Layout'
 
-interface Props {
-  pageData: PageData
-}
+const CustomerAccount: NextPage = () => {
+  const { loading, error, data } = useQuery(CUSTOMER_QUERY, {
+    context: { token: getCookies(null, process.env.SESSION_COOKIE_NAME) },
+    fetchPolicy: 'no-cache'
+  })
 
-const CustomerAccount: NextPage<Props> = ({ pageData }) => {
+  if (loading) {
+    return <Layout>Loading...</Layout>
+  }
+
+  if (error || !data.customer) {
+    removeCookies(null, process.env.SESSION_COOKIE_NAME)
+    Router.push('/customer/account/login')
+    return null
+  }
+
   return (
     <Layout>
       <h1>Customer Account Dashboard</h1>
-      <p>Hello {pageData.customer.firstname}!</p>
+      <p>Hello {data.customer.firstname}!</p>
       <Link href='/customer/account/logout'>
         <a>Logout</a>
       </Link>
     </Layout>
   )
-}
-
-CustomerAccount.getInitialProps = async (ctx: NextContextWithApollo) => {
-  try {
-    const { data } = await ctx.apolloClient.query({
-      query: CUSTOMER_QUERY,
-      context: {
-        token: getCookies(ctx, process.env.SESSION_COOKIE_NAME)
-      }
-    })
-
-    if (!data) {
-      throw new Error('Data not found')
-    }
-
-    return { pageData: data }
-  } catch (err) {
-    removeCookies(ctx, process.env.SESSION_COOKIE_NAME)
-    redirect('/customer/account/login', ctx)
-    return { pageData: {} }
-  }
 }
 
 export default CustomerAccount

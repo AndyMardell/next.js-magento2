@@ -2,35 +2,37 @@ import { NextPage } from 'next'
 import React, { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { setCookies } from 'cookies-next'
+import { useRouter } from 'next/router'
+import { useMutation } from '@apollo/react-hooks'
 
-import withData from '../../../lib/apollo-client'
 import Layout from '../../../components/global/Layout'
 import { LOGIN_MUTATION } from '../../../gql/customer/mutations'
-import redirect from '../../../lib/redirect'
 
 interface FieldValues {
   email: string
   password: string
 }
 
-const CustomerAccountLogin: NextPage = ({ apollo }: any) => {
+const CustomerAccountLogin: NextPage = () => {
   const { handleSubmit, register, errors, reset } = useForm<FieldValues>()
   const [error, setError] = useState(false)
+  const [login] = useMutation(LOGIN_MUTATION)
+  const router = useRouter()
 
   const onSubmit = async ({ email, password }: Record<string, any>) => {
     try {
-      const { data } = await apollo.mutate({
-        mutation: LOGIN_MUTATION,
+      const { data } = await login({
         variables: { email, password }
       })
 
-      const { generateCustomerToken: customer } = data
-      setCookies(null, process.env.SESSION_COOKIE_NAME, customer.token, {
+      const { generateCustomerToken: customerToken } = data
+
+      setCookies(null, process.env.SESSION_COOKIE_NAME, customerToken.token, {
         path: '/',
         expires: new Date(Date.now() + 12096e5) // 2 weeks from now
       })
 
-      redirect('/customer/account')
+      router.push('/customer/account')
     } catch (err) {
       setError(err.message)
       reset()
@@ -69,4 +71,4 @@ const CustomerAccountLogin: NextPage = ({ apollo }: any) => {
   )
 }
 
-export default withData(CustomerAccountLogin)
+export default CustomerAccountLogin

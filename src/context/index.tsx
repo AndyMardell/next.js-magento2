@@ -4,9 +4,11 @@ import React, {
   FunctionComponent,
   Dispatch
 } from 'react'
+import { Message } from '../hooks/useMessages'
 
 interface ContextType {
-  showMenu: boolean
+  showMenu?: boolean
+  messages: Message[]
 }
 
 interface ContextWithDispatch {
@@ -15,7 +17,8 @@ interface ContextWithDispatch {
 }
 
 const defaultContextValue: ContextType = {
-  showMenu: false
+  showMenu: false,
+  messages: []
 }
 
 const Context = createContext({

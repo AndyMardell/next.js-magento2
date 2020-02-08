@@ -1,11 +1,12 @@
 import { NextPage } from 'next'
 import React, { useState } from 'react'
 import { useForm } from 'react-hook-form'
+import { useRouter } from 'next/router'
+import { useMutation } from '@apollo/react-hooks'
 
-import withData from '../../../lib/apollo-client'
 import Layout from '../../../components/global/Layout'
 import { REGISTER_MUTATION } from '../../../gql/customer/mutations'
-import redirect from '../../../lib/redirect'
+import useMessages from '../../../hooks/useMessages'
 
 interface FieldValues {
   firstName: string
@@ -16,11 +17,14 @@ interface FieldValues {
   confirmPassword: string
 }
 
-const CustomerAccountCreate: NextPage = ({ apollo }: any) => {
+const CustomerAccountCreate: NextPage = () => {
   const { handleSubmit, register, errors, setError, clearError } = useForm<
     FieldValues
   >()
   const [registrationError, setRegistrationError] = useState('')
+  const [signup] = useMutation(REGISTER_MUTATION)
+  const router = useRouter()
+  const { setMessage } = useMessages()
 
   const onSubmit = async ({
     firstName: firstname,
@@ -37,8 +41,7 @@ const CustomerAccountCreate: NextPage = ({ apollo }: any) => {
     }
 
     try {
-      await apollo.mutate({
-        mutation: REGISTER_MUTATION,
+      await signup({
         variables: {
           firstname,
           lastname,
@@ -51,7 +54,8 @@ const CustomerAccountCreate: NextPage = ({ apollo }: any) => {
       setRegistrationError(err.message)
     }
 
-    redirect('/customer/account/login')
+    setMessage('Registration successful, please sign in', { type: 'success' })
+    router.push('/customer/account/login')
   }
 
   return (
@@ -115,4 +119,4 @@ const CustomerAccountCreate: NextPage = ({ apollo }: any) => {
   )
 }
 
-export default withData(CustomerAccountCreate)
+export default CustomerAccountCreate

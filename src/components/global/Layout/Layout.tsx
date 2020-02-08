@@ -3,6 +3,7 @@ import Head from 'next/head'
 
 import Header from '../Header'
 import Footer from '../Footer'
+import Messages from '../Messages'
 
 interface Props {
   welcome?: string
@@ -17,6 +18,7 @@ const Layout: FunctionComponent<Props> = ({ welcome, children }) => {
         <link rel='icon' href='/favicon.ico' />
       </Head>
       <Header welcome={welcome} />
+      <Messages />
       <main>{children}</main>
       <Footer />
     </>

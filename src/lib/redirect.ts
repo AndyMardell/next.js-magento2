@@ -1,4 +1,5 @@
 import NextContextWithApollo from '../interfaces/NextContextWithApollo'
+import Router from 'next/router'
 
 const redirect: Function = (
   url: string,
