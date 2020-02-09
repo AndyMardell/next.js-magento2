@@ -7,7 +7,7 @@ import { useMutation, useQuery, useLazyQuery } from '@apollo/react-hooks'
 
 import Layout from '../../../components/global/Layout'
 import { LOGIN_MUTATION } from '../../../gql/customer/mutations'
-import { CUSTOMER_QUERY, CART_QUERY } from '../../../gql/customer/queries'
+import { CUSTOMER_QUERY } from '../../../gql/customer/queries'
 import Context from '../../../context'
 
 interface FieldValues {
@@ -22,16 +22,12 @@ const CustomerAccountLogin: NextPage = () => {
   const [getUser, { loading: userLoading, data: userData }] = useLazyQuery(
     CUSTOMER_QUERY
   )
-  const [getCart, { loading: cartLoading, data: cartData }] = useLazyQuery(
-    CART_QUERY
-  )
   const router = useRouter()
   const { setContext } = useContext(Context)
   useEffect(() => {
-    if (!userLoading && !cartLoading && userData) {
+    if (!userLoading && userData) {
       setContext({
-        user: userData.customer,
-        cart: cartData && cartData.cart
+        user: userData.customer
       })
 
       router.push('/customer/account')

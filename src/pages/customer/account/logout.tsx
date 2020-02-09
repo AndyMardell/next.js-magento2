@@ -17,7 +17,7 @@ const CustomerAccountLogout: NextPage = () => {
     router.push('/customer/account/login')
   }
 
-  const triggerLogout = async () => {
+  const handleLogout = async () => {
     try {
       await logout({
         context: {
@@ -33,7 +33,7 @@ const CustomerAccountLogout: NextPage = () => {
   }
 
   useEffect(() => {
-    triggerLogout()
+    handleLogout()
   }, [])
 
   return null

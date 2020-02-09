@@ -4,7 +4,7 @@ import ErrorPage from 'next/error'
 
 import NextContextWithApollo from '../interfaces/NextContextWithApollo'
 import { PRODUCTS_QUERY } from '../gql/products/queries'
-import { Product } from '../gql/products/types'
+import { CatalogProduct } from '../gql/products/types'
 import { PageData } from '../gql/page/types'
 import Layout from '../components/global/Layout'
 import ProductList from '../components/catalog/Products/ProductList'
@@ -15,7 +15,7 @@ interface Props {
   pageData?: PageData
   products?: {
     item_count: number
-    items: Product[]
+    items: CatalogProduct[]
   }
   error?: ErrorInterface
 }

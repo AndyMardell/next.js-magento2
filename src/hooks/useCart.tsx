@@ -1,31 +1,47 @@
-import { useMutation } from '@apollo/react-hooks'
-import { useState, useEffect, useContext } from 'react'
+import { useMutation, useLazyQuery } from '@apollo/react-hooks'
+import { useEffect, useContext } from 'react'
 
-import { Cart } from '../gql/checkout/types'
 import {
   ADD_TO_CART_MUTATION,
   CREATE_EMPTY_CART
 } from '../gql/checkout/mutations'
 import Context from '../context'
+import { CART_QUERY } from '../gql/checkout/queries'
 
 const useCart = () => {
-  const [add, { data, loading, error }] = useMutation(ADD_TO_CART_MUTATION)
+  const { context, setContext } = useContext(Context)
+
+  const [
+    add,
+    { data: addToCartData, loading: addToCartLoading, error }
+  ] = useMutation(ADD_TO_CART_MUTATION)
+
+  const [getCart, { data: cartData, loading: cartLoading }] = useLazyQuery(
+    CART_QUERY
+  )
+
   const [
     createCart,
     { data: emptyCartData, loading: emptyCartLoading }
   ] = useMutation(CREATE_EMPTY_CART)
-  const { context, setContext } = useContext(Context)
 
   useEffect(() => {
-    if (!loading && data) {
-      setContext({ cart: data.addSimpleProductsToCart.cart })
+    if (!addToCartLoading && addToCartData) {
+      setContext({ cart: addToCartData.addSimpleProductsToCart.cart })
     }
-  }, [data, loading])
+  }, [addToCartData, addToCartLoading])
+
+  useEffect(() => {
+    if (!cartLoading && cartData) {
+      setContext({ cart: cartData.cart })
+    }
+  }, [cartData, cartLoading])
 
   useEffect(() => {
     const existingId = localStorage.getItem(`${process.env.APP_PREFIX}_cartId`)
 
     if (existingId) {
+      getCart({ variables: { cartId: existingId } })
       setContext({ cartId: existingId })
     }
 
@@ -40,7 +56,7 @@ const useCart = () => {
         )
       }
     }
-  }, [emptyCartData, emptyCartLoading])
+  }, [addToCartLoading, emptyCartData, emptyCartLoading])
 
   const addToCart = (itemSku: String, qty: Number = 1) => {
     add({ variables: { cartId: context.cartId, itemSku, qty } })
@@ -49,7 +65,7 @@ const useCart = () => {
   return {
     cart: context.cart,
     addToCart,
-    loading: loading || emptyCartLoading,
+    loading: addToCartLoading || cartLoading || emptyCartLoading,
     error
   }
 }

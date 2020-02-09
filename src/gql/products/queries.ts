@@ -7,6 +7,11 @@ const PRODUCTS_QUERY = gql`
       items {
         name
         sku
+        url_key
+        small_image {
+          url
+          label
+        }
       }
       page_info {
         page_size

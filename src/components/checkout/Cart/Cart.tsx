@@ -1,8 +1,5 @@
-import React, { FunctionComponent, useEffect, useContext } from 'react'
-import { useLazyQuery } from '@apollo/react-hooks'
+import React, { FunctionComponent } from 'react'
 
-import { CART_QUERY } from '../../../gql/customer/queries'
-import Context from '../../../context'
 import useCart from '../../../hooks/useCart'
 
 const Cart: FunctionComponent = () => {
