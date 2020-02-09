@@ -28,7 +28,9 @@ const Messages: FunctionComponent = () => {
   const [currentMessages, setCurrentMessages] = useState<Message[]>([])
 
   useEffect(() => {
-    setCurrentMessages(messages)
+    if (messages) {
+      setCurrentMessages(messages)
+    }
     clearMessages()
   }, [])
 

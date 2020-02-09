@@ -11,4 +11,19 @@ const CUSTOMER_QUERY = gql`
   }
 `
 
-export { CUSTOMER_QUERY }
+const CART_QUERY = gql`
+  query Cart($cartId: String!) {
+    cart(cart_id: $cartId) {
+      items {
+        id
+        product {
+          name
+          sku
+        }
+        quantity
+      }
+    }
+  }
+`
+
+export { CUSTOMER_QUERY, CART_QUERY }

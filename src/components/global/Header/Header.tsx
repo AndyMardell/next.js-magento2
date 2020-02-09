@@ -2,6 +2,8 @@ import { FunctionComponent } from 'react'
 import Link from 'next/link'
 import styled from 'styled-components'
 
+import Cart from '../../checkout/Cart'
+
 const TopBar = styled.div`
   display: flex;
   justify-content: space-between;
@@ -79,6 +81,7 @@ const Header: FunctionComponent<Props> = ({ welcome }) => {
             </li>
           </ul>
         </nav>
+        <Cart />
       </MainBar>
     </header>
   )

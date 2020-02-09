@@ -1,7 +1,7 @@
 import React, { FunctionComponent } from 'react'
 
 import { Product as ProductType } from '../../../gql/products/types'
-import Product from './Product'
+import Product from '../Product'
 
 interface Props {
   products: ProductType[]

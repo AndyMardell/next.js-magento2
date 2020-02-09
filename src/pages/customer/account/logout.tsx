@@ -26,7 +26,6 @@ const CustomerAccountLogout: NextPage = () => {
       })
     } catch (err) {
       resetUser()
-      console.log(err)
     }
 
     setMessage('Successfully logged out', { type: 'success' })

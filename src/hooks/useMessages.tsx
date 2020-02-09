@@ -14,8 +14,9 @@ const useMessages = () => {
   const { context, setContext } = useContext(Context)
 
   const setMessage = (message: string, options?: MessageOptions) => {
+    const existingMessages = context.messages || []
     setContext({
-      messages: [...context.messages, { message, options }]
+      messages: [...existingMessages, { message, options }]
     })
   }
 

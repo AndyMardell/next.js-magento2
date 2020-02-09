@@ -4,11 +4,17 @@ import React, {
   FunctionComponent,
   Dispatch
 } from 'react'
+
 import { Message } from '../hooks/useMessages'
+import { User } from '../gql/customer/types'
+import { Cart } from '../gql/checkout/types'
 
 interface ContextType {
   showMenu?: boolean
-  messages: Message[]
+  messages?: Message[]
+  user?: User
+  cartId?: String
+  cart?: Cart
 }
 
 interface ContextWithDispatch {

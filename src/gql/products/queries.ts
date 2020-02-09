@@ -6,6 +6,7 @@ const PRODUCTS_QUERY = gql`
       total_count
       items {
         name
+        sku
       }
       page_info {
         page_size

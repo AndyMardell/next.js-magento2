@@ -1,12 +1,14 @@
 import { NextPage } from 'next'
-import React, { useState } from 'react'
+import React, { useState, useContext, useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { setCookies } from 'cookies-next'
 import { useRouter } from 'next/router'
-import { useMutation } from '@apollo/react-hooks'
+import { useMutation, useQuery, useLazyQuery } from '@apollo/react-hooks'
 
 import Layout from '../../../components/global/Layout'
 import { LOGIN_MUTATION } from '../../../gql/customer/mutations'
+import { CUSTOMER_QUERY, CART_QUERY } from '../../../gql/customer/queries'
+import Context from '../../../context'
 
 interface FieldValues {
   email: string
@@ -17,7 +19,24 @@ const CustomerAccountLogin: NextPage = () => {
   const { handleSubmit, register, errors, reset } = useForm<FieldValues>()
   const [error, setError] = useState(false)
   const [login] = useMutation(LOGIN_MUTATION)
+  const [getUser, { loading: userLoading, data: userData }] = useLazyQuery(
+    CUSTOMER_QUERY
+  )
+  const [getCart, { loading: cartLoading, data: cartData }] = useLazyQuery(
+    CART_QUERY
+  )
   const router = useRouter()
+  const { setContext } = useContext(Context)
+  useEffect(() => {
+    if (!userLoading && !cartLoading && userData) {
+      setContext({
+        user: userData.customer,
+        cart: cartData && cartData.cart
+      })
+
+      router.push('/customer/account')
+    }
+  }, [userLoading, userData])
 
   const onSubmit = async ({ email, password }: Record<string, any>) => {
     try {
@@ -25,14 +44,12 @@ const CustomerAccountLogin: NextPage = () => {
         variables: { email, password }
       })
 
-      const { generateCustomerToken: customerToken } = data
-
-      setCookies(null, process.env.SESSION_COOKIE_NAME, customerToken.token, {
+      const customerToken = data.generateCustomerToken.token
+      setCookies(null, process.env.SESSION_COOKIE_NAME, customerToken, {
         path: '/',
         expires: new Date(Date.now() + 12096e5) // 2 weeks from now
       })
-
-      router.push('/customer/account')
+      getUser({ context: { token: customerToken } })
     } catch (err) {
       setError(err.message)
       reset()
